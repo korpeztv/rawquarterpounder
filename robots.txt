@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /rawquarterpounder/
+Allow: /rawquarterpounder/llms.txt

@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RawQuarterPounder stream schedule — State Street Diner weekly coordinates for Kick, YouTube, and more.">
+    <meta property="og:title" content="State Street Diner // Live Stream Coordinates">
+    <meta property="og:description" content="Weekly stream schedule for RawQuarterPounder.">
+    <meta property="og:url" content="https://korpeztv.github.io/rawquarterpounder/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <title>RAWQUARTERPOUNDER // WE'RE JAMMING OUT TIL JER GOES LIVE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #4a9cd6;
+            color: #1a1512;
+            overflow-x: hidden;
+        }
+
+        .mono-diner {
+            font-family: 'Courier Prime', monospace;
+        }
+
+        #sky-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .retro-border {
+            border: 4px solid #1a1512;
+        }
+
+        .retro-shadow {
+            box-shadow: 6px 6px 0px #1a1512;
+        }
+
+        .retro-shadow-sm {
+            box-shadow: 3px 3px 0px #1a1512;
+        }
+
+        .retro-shadow-lg {
+            box-shadow: 10px 10px 0px #1a1512;
+        }
+
+        .checkerboard-trim {
+            background-color: #ffffff;
+            background-image: 
+                linear-gradient(45deg, #1a1512 25%, transparent 25%), 
+                linear-gradient(-45deg, #1a1512 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #1a1512 75%), 
+                linear-gradient(-45deg, transparent 75%, #1a1512 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+        }
+
+        .letter-board-lines {
+            background: repeating-linear-gradient(
+                180deg,
+                transparent,
+                transparent 19px,
+                rgba(26, 21, 18, 0.08) 19px,
+                rgba(26, 21, 18, 0.08) 20px
+            );
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #faf6e8;
+            border-left: 4px solid #1a1512;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c9242a;
+            border: 2px solid #faf6e8;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative flex flex-col justify-between selection:bg-amber-300">
+
+    <canvas id="sky-canvas"></canvas>
+
+    <div class="relative z-10 w-full max-w-4xl mx-auto px-4 py-6 md:py-12 space-y-8 flex-1 flex flex-col justify-start">
+
+        <header class="w-full bg-[#faf6e8] retro-border retro-shadow-lg rounded-3xl overflow-hidden flex flex-col">
+            <div class="bg-[#c9242a] p-4 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-6 border-b-4 border-[#1a1512] relative">
+                
+                <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                    <div class="w-20 h-20 bg-[#faf6e8] rounded-full border-4 border-[#1a1512] relative shadow-inner flex-shrink-0 overflow-hidden">
+                        <img src="https://files.kick.com/images/user/107001827/profile_image/conversion/8180ae7f-6afe-43f2-a07d-bfd2841ffcbe-fullsize.webp" 
+                             alt="RawQuarterPounder Profile" 
+                             class="w-full h-full object-cover"
+                             onerror="this.onerror=null; this.src='https://placehold.co/100x100/faf6e8/1a1512?text=QP'">
+                    </div>
+                    
+                    <div>
+                        <div class="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                            <span id="host-status-badge" class="text-[9px] text-[#faf6e8] bg-[#1a1512] border border-[#faf6e8]/30 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider transition-all duration-300">
+                                CHECKING STATUS...
+                            </span>
+                        </div>
+                        <h1 class="text-xl md:text-2xl font-black text-white tracking-tight uppercase drop-shadow font-mono">RawQuarterPounder</h1>
+                        <p class="text-xs text-amber-200 font-mono">"Pull up a seat, order a coffee"</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#fff3a1] p-5 border-b-4 border-[#1a1512] relative letter-board-lines min-h-[100px] flex flex-col justify-center items-center text-center">
+                <span class="text-[10px] uppercase font-mono tracking-widest font-bold text-red-700/80 mb-1.5">// ANNOUNCEMENT BOARD //</span>
+                <h2 class="text-lg md:text-2xl font-bold tracking-wider uppercase text-[#1a1512] font-mono select-none" id="announcement-marquee">
+                    MOMS GET FREE CREAM PIE 5.14
+                </h2>
+            </div>
+
+            <div class="bg-[#faf6e8] p-3 grid grid-cols-2 sm:grid-cols-4 gap-2 border-t-2 border-[#1a1512]/10">
+                <a href="https://kick.com/rawquarterpounder" target="_blank" class="px-3 py-2.5 text-center rounded-xl bg-[#53fc18] hover:bg-[#46d610] text-[#1a1512] font-bold text-xs uppercase tracking-wider border-4 border-[#1a1512] retro-shadow-sm transition transform active:translate-y-0.5 active:shadow-none flex items-center justify-center gap-1.5">
+                    <i data-lucide="tv" class="w-4 h-4"></i>
+                    Kick Stream
+                </a>
+                <a href="https://www.youtube.com/@RawQuarterPounder" target="_blank" class="px-3 py-2.5 text-center rounded-xl bg-red-500 hover:bg-red-600 text-white font-bold text-xs uppercase tracking-wider border-4 border-[#1a1512] retro-shadow-sm transition transform active:translate-y-0.5 active:shadow-none flex items-center justify-center gap-1.5">
+                    <i data-lucide="tv" class="w-4 h-4"></i>
+                    Youtube Stream
+                </a>
+                <a href="https://nobeggarsgaming.gumroad.com/l/vtqsuk" target="_blank" class="px-3 py-2.5 text-center rounded-xl bg-amber-400 hover:bg-amber-500 text-[#1a1512] font-bold text-xs uppercase tracking-wider border-4 border-[#1a1512] retro-shadow-sm transition transform active:translate-y-0.5 active:shadow-none flex items-center justify-center gap-1.5">
+                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                    Gumroad
+                </a>
+                <a href="https://x.com/NoBeggarsGaming" target="_blank" class="px-3 py-2.5 text-center rounded-xl bg-sky-400 hover:bg-sky-300 text-[#1a1512] font-bold text-xs uppercase tracking-wider border-4 border-[#1a1512] retro-shadow-sm transition transform active:translate-y-0.5 active:shadow-none flex items-center justify-center gap-1.5">
+                    <i data-lucide="bird" class="w-4 h-4"></i>
+                    Xitter
+                </a>
+            </div>
+        </header>
+
+        <div class="space-y-4">
+            
+            <div class="bg-[#faf6e8] border-4 border-[#1a1512] retro-shadow rounded-3xl p-5 space-y-5">
+                
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <h3 class="text-sm font-bold text-[#1a1512] uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="clock" class="w-4 h-4 text-red-600"></i> Adjust Diner Time Coordinates
+                        </h3>
+                        <p class="text-[10px] text-zinc-600 font-mono">// Swap between your local timezone and EST standard</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                        <div class="flex bg-[#faf6e8] border-2 border-[#1a1512] rounded-xl overflow-hidden p-0.5 shadow-sm">
+                            <button onclick="changeTimezoneMode('local')" id="tz-btn-local" class="px-3 py-1.5 text-[10px] font-bold uppercase transition bg-[#c9242a] text-white rounded-lg">
+                                My Table Zone
+                            </button>
+                            <button onclick="changeTimezoneMode('est')" id="tz-btn-est" class="px-3 py-1.5 text-[10px] font-bold uppercase transition text-[#1a1512]">
+                                EST (Eastern)
+                            </button>
+                        </div>
+
+                        <button onclick="generateICSFile()" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-yellow-400 hover:bg-yellow-300 border-2 border-[#1a1512] retro-shadow-sm text-[#1a1512] text-xs font-bold rounded-xl transition uppercase font-mono">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                            Export .ICS
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t-2 border-dashed border-[#1a1512]/20"></div>
+
+                <div class="flex flex-col md:flex-row md:items-center gap-3">
+                    <span class="text-xs text-[#1a1512] font-mono font-bold tracking-wider uppercase flex-shrink-0">Select Dish Section:</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="changeCategoryFilter('all')" id="filter-btn-all" class="px-3 py-1.5 rounded-lg bg-[#fff3a1] border-2 border-[#1a1512] retro-shadow-sm text-xs font-bold text-[#1a1512] transition">
+                            All Dishes
+                        </button>
+                        <button onclick="changeCategoryFilter('radio')" id="filter-btn-radio" class="px-3 py-1.5 rounded-lg bg-[#faf6e8] border-2 border-[#1a1512] text-xs font-bold text-zinc-500 hover:text-[#1a1512] hover:bg-[#fff3a1] transition">
+                            Radio (RawQP)
+                        </button>
+                        <button onclick="changeCategoryFilter('jer')" id="filter-btn-jer" class="px-3 py-1.5 rounded-lg bg-[#faf6e8] border-2 border-[#1a1512] text-xs font-bold text-zinc-500 hover:text-[#1a1512] hover:bg-[#fff3a1] transition">
+                            Raw Log Jer
+                        </button>
+                        <button onclick="changeCategoryFilter('playsit')" id="filter-btn-playsit" class="px-3 py-1.5 rounded-lg bg-[#faf6e8] border-2 border-[#1a1512] text-xs font-bold text-zinc-500 hover:text-[#1a1512] hover:bg-[#fff3a1] transition">
+                            Special Features
+                        </button>
+                    </div>
+                </div>
+
+                <div class="border-t-2 border-dashed border-[#1a1512]/20"></div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2">
+                        <button onclick="adjustWeekOffset(-1)" class="p-2 bg-[#faf6e8] hover:bg-amber-100 border-2 border-[#1a1512] rounded-lg transition active:translate-y-0.5 retro-shadow-sm">
+                            <i data-lucide="chevron-left" class="w-4 h-4 text-[#1a1512]"></i>
+                        </button>
+                        <button onclick="resetWeekOffset()" class="px-3 py-2 bg-[#faf6e8] hover:bg-amber-100 border-2 border-[#1a1512] rounded-lg text-xs font-bold uppercase tracking-wider text-[#1a1512] transition active:translate-y-0.5 retro-shadow-sm font-mono">
+                            This Week
+                        </button>
+                        <button onclick="adjustWeekOffset(1)" class="p-2 bg-[#faf6e8] hover:bg-amber-100 border-2 border-[#1a1512] rounded-lg transition active:translate-y-0.5 retro-shadow-sm">
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-[#1a1512]"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="w-full sm:w-auto flex-1 max-w-sm">
+                        <select id="week-dropdown" onchange="onWeekDropdownChange(this.value)" class="w-full bg-[#faf6e8] border-2 border-[#1a1512] rounded-lg p-2 text-xs font-mono font-bold text-[#1a1512] focus:outline-none cursor-pointer">
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-[#faf6e8] border-4 border-[#1a1512] retro-shadow rounded-3xl overflow-hidden flex flex-col">
+                <div class="h-6 checkerboard-trim border-b-4 border-[#1a1512]"></div>
+
+                <div class="p-6">
+                    <div class="border-b-4 border-dashed border-[#1a1512]/30 pb-4 mb-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                        <div>
+                            <h2 class="text-2xl font-black uppercase text-[#c9242a] tracking-tight">Today's Daily Specials</h2>
+                            <p class="text-[11px] text-zinc-500 font-mono tracking-wide uppercase mt-1" id="menu-subtitle">State Street Diner Schedule // Auto-repeating weekly menu</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 px-3 py-1 bg-yellow-100 border-2 border-yellow-400 text-yellow-800 text-xs font-bold rounded-lg font-mono">
+                            JER CAN SOMETIMES NO SHOW CHECK HIS XITTER
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse font-mono text-sm text-[#1a1512]">
+                            <thead>
+                                <tr class="border-b-2 border-[#1a1512] text-xs uppercase font-bold text-zinc-600">
+                                    <th class="p-3">Order Code (Date)</th>
+                                    <th class="p-3">Serving Time</th>
+                                    <th class="p-3">Featured Special Dish</th>
+                                    <th class="p-3 text-right">Get Table Link</th>
+                                </tr>
+                            </thead>
+                            <tbody id="menu-table-rows" class="divide-y divide-[#1a1512]/10">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="h-6 checkerboard-trim border-t-4 border-[#1a1512]"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="relative z-10 py-6 border-t-4 border-[#1a1512] bg-[#faf6e8] text-center text-xs font-mono tracking-wider text-zinc-700">
+        WE'RE JAMMING OUT TIL JER GOES LIVE 
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        function updateHostOnlineStatus() {
+            const badge = document.getElementById("host-status-badge");
+            if (!badge) return;
+
+            try {
+                const options = {
+                    timeZone: "America/New_York",
+                    year: "numeric", month: "numeric", day: "numeric",
+                    hour: "numeric", minute: "numeric", second: "numeric",
+                    hour12: false
+                };
+                
+                const formatter = new Intl.DateTimeFormat("en-US", options);
+                const parts = formatter.formatToParts(new Date());
+                const dt = {};
+                parts.forEach(p => dt[p.type] = p.value);
+
+                const year = parseInt(dt.year);
+                const month = parseInt(dt.month);
+                const day = parseInt(dt.day);
+                const hour = parseInt(dt.hour);
+                const minute = parseInt(dt.minute);
+
+                const estDate = new Date(year, month - 1, day, hour, minute);
+                const dayOfWeek = estDate.getDay();
+                const minutesSinceMidnight = hour * 60 + minute;
+
+                let isOnline = false;
+
+                if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                    const currentOffset = dayOfWeek - 1;
+
+                    dinerScheduleData.forEach(event => {
+                        if (event.dayOffset === currentOffset) {
+                            const [startH, startM] = event.estTime.split(":").map(Number);
+                            const startMins = startH * 60 + startM;
+                            const endMins = startMins + (event.duration * 60);
+
+                            if (minutesSinceMidnight >= startMins && minutesSinceMidnight < endMins) {
+                                isOnline = true;
+                            }
+                        }
+                    });
+                }
+
+                if (isOnline) {
+                    badge.innerText = "HOST IS ONLINE";
+                    badge.className = "text-[9px] text-[#faf6e8] bg-[#c9242a] border border-[#faf6e8]/30 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider animate-pulse shadow-[0_0_8px_rgba(201,36,42,0.6)]";
+                } else {
+                    badge.innerText = "HOST IS OFFLINE";
+                    badge.className = "text-[9px] text-zinc-400 bg-[#1a1512]/60 border border-zinc-700/30 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider";
+                }
+            } catch (e) {
+                badge.innerText = "HOST INACTIVE";
+                badge.className = "text-[9px] text-zinc-400 bg-[#1a1512]/60 border border-zinc-700/30 px-2 py-0.5 rounded font-mono font-bold uppercase tracking-wider";
+            }
+        }
+
+        let currentWeekOffset = 0;
+
+        function getWeekMonday(offset = 0) {
+            const today = new Date();
+            const day = today.getDay();
+            const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(today.setDate(diff));
+            monday.setDate(monday.getDate() + (offset * 7));
+            monday.setHours(0, 0, 0, 0);
+            return monday;
+        }
+
+        function getDynamicDateString(dayOffset, weekOffset = 0) {
+            const monday = getWeekMonday(weekOffset);
+            const targetDate = new Date(monday);
+            targetDate.setDate(monday.getDate() + dayOffset);
+            
+            const year = targetDate.getFullYear();
+            const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+            const day = String(targetDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        const announcementMarquees = [
+            "MOMS GET FREE CREAM PIE 5.14",
+            "SUBSCRIBE ON YOUTUBE // JOIN KICK",
+            "FOLLOW ON X @NOBEGGARSGAMING",
+            "CHECK OUT GUMROAD FOR ARCHIVES"
+        ];
+        let currentMarqueeIndex = 0;
+        setInterval(() => {
+            currentMarqueeIndex = (currentMarqueeIndex + 1) % announcementMarquees.length;
+            const marqueeElement = document.getElementById("announcement-marquee");
+            if (marqueeElement) {
+                marqueeElement.innerText = announcementMarquees[currentMarqueeIndex];
+            }
+        }, 5000);
+
+        const dinerScheduleData = [
+            { id: 1, dayOffset: 0, estTime: "08:00", duration: 1, title: "RawQP Radio", category: "radio", url: "https://kick.com/rawquarterpounder" },
+            { id: 2, dayOffset: 0, estTime: "09:00", duration: 1, title: "Raw Log Jer", category: "jer", url: "https://kick.com/rawquarterpounder" },
+
+            { id: 3, dayOffset: 1, estTime: "08:00", duration: 1, title: "RawQP Radio", category: "radio", url: "https://kick.com/rawquarterpounder" },
+            { id: 4, dayOffset: 1, estTime: "09:00", duration: 1, title: "Raw Log Jer", category: "jer", url: "https://kick.com/rawquarterpounder" },
+            { id: 5, dayOffset: 1, estTime: "13:00", duration: 1, title: "RawQP Radio", category: "radio", url: "https://kick.com/rawquarterpounder" },
+            { id: 6, dayOffset: 1, estTime: "14:00", duration: 1, title: "Raw Log Jer", category: "jer", url: "https://kick.com/rawquarterpounder" },
+            { id: 7, dayOffset: 1, estTime: "20:00", duration: 2.5, title: "RawQP Plays It", category: "playsit", url: "https://kick.com/rawquarterpounder" },
+
+            { id: 8, dayOffset: 2, estTime: "08:00", duration: 1, title: "RawQP Radio", category: "radio", url: "https://kick.com/rawquarterpounder" },
+            { id: 9, dayOffset: 2, estTime: "09:00", duration: 1, title: "Raw Log Jer", category: "jer", url: "https://kick.com/rawquarterpounder" },
+
+            { id: 10, dayOffset: 3, estTime: "08:00", duration: 1, title: "RawQP Radio", category: "radio", url: "https://kick.com/rawquarterpounder" },
+            { id: 11, dayOffset: 3, estTime: "09:00", duration: 1, title: "Raw Log Jer", category: "jer", url: "https://kick.com/rawquarterpounder" },
+            { id: 12, dayOffset: 3, estTime: "13:00", duration: 1, title: "RawQP Radio", category: "radio", url: "https://kick.com/rawquarterpounder" },
+            { id: 13, dayOffset: 3, estTime: "14:00", duration: 1, title: "Raw Log Jer", category: "jer", url: "https://kick.com/rawquarterpounder" },
+            { id: 14, dayOffset: 3, estTime: "20:00", duration: 3, title: "RawQP Plays It", category: "playsit", url: "https://kick.com/rawquarterpounder" },
+
+            { id: 15, dayOffset: 4, estTime: "08:00", duration: 1, title: "RawQP Radio", category: "radio", url: "https://kick.com/rawquarterpounder" },
+            { id: 16, dayOffset: 4, estTime: "09:00", duration: 1, title: "Raw Log Jer", category: "jer", url: "https://kick.com/rawquarterpounder" }
+        ];
+
+        let selectedCategoryFilter = "all";
+        let displayTimezonePreference = "local";
+
+        function convertEstToLocal(dateString, timeString) {
+            const inputEstTimeIso = `${dateString}T${timeString}:00-04:00`;
+            const localDateObject = new Date(inputEstTimeIso);
+
+            if (isNaN(localDateObject.getTime())) {
+                return { date: dateString, time: timeString, timezone: "EST" };
+            }
+
+            const formatOptionsDate = { weekday: 'short', month: 'short', day: 'numeric' };
+            const formatOptionsTime = { hour: '2-digit', minute: '2-digit', hour12: true };
+
+            const displayDate = localDateObject.toLocaleDateString(undefined, formatOptionsDate);
+            const displayTime = localDateObject.toLocaleTimeString(undefined, formatOptionsTime);
+            const displayTz = localDateObject.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ').pop();
+
+            return {
+                date: displayDate,
+                time: displayTime,
+                timezone: displayTz
+            };
+        }
+
+        function populateWeekDropdown() {
+            const dropdown = document.getElementById("week-dropdown");
+            if (!dropdown) return;
+            dropdown.innerHTML = "";
+            
+            const formatOpt = { month: 'short', day: 'numeric', year: 'numeric' };
+            for (let i = 0; i < 52; i++) {
+                const mon = getWeekMonday(i);
+                const fri = new Date(mon);
+                fri.setDate(mon.getDate() + 4);
+                
+                const label = `Week of ${mon.toLocaleDateString(undefined, {month:'short', day:'numeric'})} - ${fri.toLocaleDateString(undefined, formatOpt)}`;
+                const option = document.createElement("option");
+                option.value = i;
+                option.innerText = label;
+                dropdown.appendChild(option);
+            }
+        }
+
+        function adjustWeekOffset(val) {
+            currentWeekOffset = Math.max(0, Math.min(51, currentWeekOffset + val));
+            document.getElementById("week-dropdown").value = currentWeekOffset;
+            renderDinerMenuTable();
+        }
+
+        function resetWeekOffset() {
+            currentWeekOffset = 0;
+            document.getElementById("week-dropdown").value = currentWeekOffset;
+            renderDinerMenuTable();
+        }
+
+        function onWeekDropdownChange(val) {
+            currentWeekOffset = parseInt(val);
+            renderDinerMenuTable();
+        }
+
+        function renderDinerMenuTable() {
+            const tableBody = document.getElementById("menu-table-rows");
+            if (!tableBody) return;
+            tableBody.innerHTML = "";
+
+            const filteredMenuSpecials = dinerScheduleData.filter(special => {
+                if (selectedCategoryFilter === "all") return true;
+                return special.category === selectedCategoryFilter;
+            });
+
+            if (filteredMenuSpecials.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="p-8 text-center text-zinc-500 italic">
+                            Sorry, that category dish section is closed today.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const monday = getWeekMonday(currentWeekOffset);
+            const friday = new Date(monday);
+            friday.setDate(monday.getDate() + 4);
+            const formatOpt = { month: 'short', day: 'numeric', year: 'numeric' };
+            document.getElementById("menu-subtitle").innerText = `State Street Diner Schedule // ${monday.toLocaleDateString(undefined, formatOpt)} – ${friday.toLocaleDateString(undefined, formatOpt)}`;
+
+            filteredMenuSpecials.forEach(dish => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-amber-100/50 transition duration-150";
+
+                const dateString = getDynamicDateString(dish.dayOffset, currentWeekOffset);
+
+                let dateCell, timeCell, timezoneCell;
+                if (displayTimezonePreference === "local") {
+                    const localResults = convertEstToLocal(dateString, dish.estTime);
+                    dateCell = localResults.date;
+                    timeCell = localResults.time;
+                    timezoneCell = localResults.timezone;
+                } else {
+                    const d = new Date(dateString + "T00:00:00");
+                    const dateFormatted = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    
+                    let hours = parseInt(dish.estTime.split(":")[0]);
+                    let minutes = dish.estTime.split(":")[1];
+                    let suffix = hours >= 12 ? "PM" : "AM";
+                    let hourFormatted = hours % 12 || 12;
+
+                    dateCell = dateFormatted;
+                    timeCell = `${hourFormatted}:${minutes} ${suffix}`;
+                    timezoneCell = "EDT";
+                }
+
+                let categoryBadgeClass = "";
+                let itemSymbol = "star";
+                if (dish.category === "radio") {
+                    categoryBadgeClass = "bg-[#c9242a] text-white";
+                    itemSymbol = "mic";
+                } else if (dish.category === "jer") {
+                    categoryBadgeClass = "bg-amber-400 text-zinc-900";
+                    itemSymbol = "user";
+                } else {
+                    categoryBadgeClass = "bg-blue-500 text-white";
+                    itemSymbol = "gamepad-2";
+                }
+
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-zinc-800">
+                        ${dateCell}
+                    </td>
+                    <td class="p-3 font-bold text-blue-600">
+                        ${timeCell} <span class="text-[10px] font-normal text-zinc-400">${timezoneCell}</span>
+                    </td>
+                    <td class="p-3">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 text-[9px] font-bold rounded ${categoryBadgeClass} uppercase flex items-center gap-1 border border-[#1a1512]">
+                                <i data-lucide="${itemSymbol}" class="w-3.5 h-3.5"></i>
+                                ${dish.category}
+                            </span>
+                            <span class="text-[#1a1512] font-semibold text-sm font-sans">${dish.title}</span>
+                        </div>
+                    </td>
+                    <td class="p-3 text-right">
+                        <a href="${dish.url}" target="_blank" class="inline-flex items-center gap-1 px-3 py-1 bg-yellow-400 hover:bg-yellow-300 border-2 border-[#1a1512] text-[#1a1512] font-bold rounded-lg text-xs transition retro-shadow-sm">
+                            <span>Watch</span>
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                        </a>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            lucide.createIcons();
+        }
+
+        function changeTimezoneMode(mode) {
+            displayTimezonePreference = mode;
+            const btnLocal = document.getElementById("tz-btn-local");
+            const btnEst = document.getElementById("tz-btn-est");
+
+            if (mode === "local") {
+                btnLocal.className = "px-3 py-1 text-xs font-bold uppercase transition bg-[#c9242a] text-white rounded-lg";
+                btnEst.className = "px-3 py-1 text-xs font-bold uppercase transition text-[#1a1512]";
+            } else {
+                btnLocal.className = "px-3 py-1 text-xs font-bold uppercase transition text-[#1a1512]";
+                btnEst.className = "px-3 py-1 text-xs font-bold uppercase transition bg-[#c9242a] text-white rounded-lg";
+            }
+            renderDinerMenuTable();
+        }
+
+        function changeCategoryFilter(cat) {
+            selectedCategoryFilter = cat;
+            ["all", "radio", "jer", "playsit"].forEach(categoryCode => {
+                const button = document.getElementById(`filter-btn-${categoryCode}`);
+                if (categoryCode === cat) {
+                    button.className = "px-3 py-1 rounded-lg bg-[#fff3a1] border-2 border-[#1a1512] retro-shadow-sm text-xs font-bold text-[#1a1512] transition";
+                } else {
+                    button.className = "px-3 py-1 rounded-lg bg-[#faf6e8] border-2 border-[#1a1512] text-xs font-bold text-zinc-500 hover:text-[#1a1512] hover:bg-[#fff3a1] transition";
+                }
+            });
+            renderDinerMenuTable();
+        }
+
+        function generateICSFile() {
+            let icsDataLines = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//State Street Diner//Daily Specials Planner//EN',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH'
+            ];
+
+            dinerScheduleData.forEach(event => {
+                const dateString = getDynamicDateString(event.dayOffset, currentWeekOffset);
+                const estIsoDateTime = `${dateString}T${event.estTime}:00-04:00`;
+                const dateParsed = new Date(estIsoDateTime);
+
+                if (isNaN(dateParsed.getTime())) return;
+
+                const formatToIcsFormat = (d) => {
+                    return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                };
+
+                const startTimestamp = formatToIcsFormat(dateParsed);
+                const durationMilliseconds = event.duration * 60 * 60 * 1000;
+                const endTimestamp = formatToIcsFormat(new Date(dateParsed.getTime() + durationMilliseconds));
+
+                icsDataLines.push(
+                    'BEGIN:VEVENT',
+                    `UID:event-${event.id}-${dateString}@statestreet.diner`,
+                    `DTSTART:${startTimestamp}`,
+                    `DTEND:${endTimestamp}`,
+                    `SUMMARY:${event.title}`,
+                    `DESCRIPTION:Grab a daily special dish. Station: ${event.url}`,
+                    `URL:${event.url}`,
+                    'END:VEVENT'
+                );
+            });
+
+            icsDataLines.push('END:VCALENDAR');
+
+            const blob = new Blob([icsDataLines.join('\r\n')], { type: 'text/calendar' });
+            const temporaryUrl = URL.createObjectURL(blob);
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.href = temporaryUrl;
+            downloadAnchor.download = `state-street-stream-schedule-${getWeekMonday(currentWeekOffset).toISOString().split('T')[0]}.ics`;
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+            URL.revokeObjectURL(temporaryUrl);
+        }
+
+        let skyCanvasElement = null;
+        let skyContext = null;
+        let cloudsAndDinerPropsArray = [];
+        let animationFrameHolder = null;
+        let interactionPointer = { x: -1000, y: -1000 };
+
+        const dinerDoodles = ["🍊", "☕", "🐂"];
+
+        class FluffyCloud {
+            constructor() {
+                this.resetCloud();
+                this.x = Math.random() * window.innerWidth;
+            }
+
+            resetCloud() {
+                this.x = -250;
+                this.y = Math.random() * (window.innerHeight * 0.4) + 20;
+                this.width = Math.random() * 120 + 80;
+                this.height = this.width * 0.55;
+                this.speed = Math.random() * 0.4 + 0.15;
+            }
+
+            update() {
+                this.x += this.speed;
+                if (this.x > window.innerWidth + 250) {
+                    this.resetCloud();
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.fillStyle = "rgba(255, 255, 255, 0.55)";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.height * 0.5, 0, Math.PI * 2);
+                ctx.arc(this.x + this.width * 0.35, this.y - this.height * 0.1, this.height * 0.45, 0, Math.PI * 2);
+                ctx.arc(this.x + this.width * 0.65, this.y, this.height * 0.4, 0, Math.PI * 2);
+                ctx.rect(this.x, this.y, this.width * 0.65, this.height * 0.5);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class FallingDinerProp {
+            constructor() {
+                this.resetProp();
+                this.y = Math.random() * window.innerHeight;
+            }
+
+            resetProp() {
+                this.x = Math.random() * window.innerWidth;
+                this.y = -40;
+                this.symbol = dinerDoodles[Math.floor(Math.random() * dinerDoodles.length)];
+                this.size = Math.random() * 18 + 12;
+                this.speedY = Math.random() * 1.5 + 0.8;
+                this.speedX = (Math.random() - 0.5) * 0.6;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.04;
+                this.opacity = Math.random() * 0.4 + 0.25;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotSpeed;
+
+                const dx = interactionPointer.x - this.x;
+                const dy = interactionPointer.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 110) {
+                    this.x -= dx * 0.04;
+                    this.y -= dy * 0.04;
+                    this.speedX += (Math.random() - 0.5) * 0.15;
+                }
+
+                if (this.y > window.innerHeight + 40) {
+                    this.resetProp();
+                }
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `${this.size}px Fredoka`;
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.fillText(this.symbol, -this.size / 2, this.size / 2);
+                ctx.restore();
+            }
+        }
+
+        function initiateDinerCanvas() {
+            skyCanvasElement = document.getElementById("sky-canvas");
+            if (!skyCanvasElement) return;
+            skyContext = skyCanvasElement.getContext("2d");
+
+            skyCanvasElement.width = window.innerWidth;
+            skyCanvasElement.height = window.innerHeight;
+
+            cloudsAndDinerPropsArray = [];
+
+            for (let i = 0; i < 4; i++) {
+                cloudsAndDinerPropsArray.push(new FluffyCloud());
+            }
+
+            for (let i = 0; i < 85; i++) {
+                cloudsAndDinerPropsArray.push(new FallingDinerProp());
+            }
+
+            window.addEventListener("mousemove", trackCursorCoordinates);
+            window.addEventListener("touchmove", trackCursorCoordinates, { passive: true });
+            window.addEventListener("resize", handleWindowResize);
+
+            if (animationFrameHolder) cancelAnimationFrame(animationFrameHolder);
+            skyCanvasEngineLoop();
+        }
+
+        function handleWindowResize() {
+            if (!skyCanvasElement) return;
+            skyCanvasElement.width = window.innerWidth;
+            skyCanvasElement.height = window.innerHeight;
+        }
+
+        function trackCursorCoordinates(e) {
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            interactionPointer.x = clientX;
+            interactionPointer.y = clientY;
+        }
+
+        function skyCanvasEngineLoop() {
+            if (!skyCanvasElement || !skyContext) return;
+
+            skyContext.fillStyle = "#4a9cd6";
+            skyContext.fillRect(0, 0, skyCanvasElement.width, skyCanvasElement.height);
+
+            cloudsAndDinerPropsArray.forEach(entity => {
+                entity.update();
+                entity.draw(skyContext);
+            });
+
+            animationFrameHolder = requestAnimationFrame(skyCanvasEngineLoop);
+        }
+
+        window.onload = function() {
+            populateWeekDropdown();
+            initiateDinerCanvas();
+            renderDinerMenuTable();
+            
+            updateHostOnlineStatus();
+            setInterval(updateHostOnlineStatus, 15000);
+        };
+    </script>
+</body>
+</html>

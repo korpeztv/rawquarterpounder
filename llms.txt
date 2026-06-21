@@ -1,0 +1,16 @@
+# State Street Diner
+
+> Weekly live-stream schedule for RawQuarterPounder (RawQP), hosted on Kick and YouTube. Shows recurring weekday slots for RawQP Radio, Raw Log Jer, and RawQP Plays It specials in US Eastern time, with local-timezone conversion and .ics calendar export.
+
+State Street Diner is a single-page schedule dashboard for the RawQuarterPounder streaming brand. The schedule repeats weekly (Monday–Friday). Jer's segments may not always run — the site notes viewers should check X for updates.
+
+## Main pages
+
+- [Schedule](https://korpeztv.github.io/rawquarterpounder/): Interactive weekly menu with timezone toggle, category filters, and calendar export.
+
+## External links
+
+- [Kick stream](https://kick.com/rawquarterpounder): Primary live stream channel.
+- [YouTube](https://www.youtube.com/@RawQuarterPounder): YouTube stream and VODs.
+- [Gumroad](https://nobeggarsgaming.gumroad.com/l/vtqsuk): Archives and digital goods.
+- [X / Twitter](https://x.com/NoBeggarsGaming): Announcements and Jer schedule updates.
