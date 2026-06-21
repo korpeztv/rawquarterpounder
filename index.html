@@ -345,9 +345,24 @@
 
         const announcementMarquees = [
             "MOMS GET FREE CREAM PIE 5.14",
-            "SUBSCRIBE ON YOUTUBE // JOIN KICK",
-            "FOLLOW ON X @NOBEGGARSGAMING",
-            "CHECK OUT GUMROAD FOR ARCHIVES"
+            "Take everything they have and never apologize for it",
+            "Shitting my pants at a Walmart",
+            "Most transparent gay op in history",
+            "Literal demon terrorizing a widow",
+            "250k white girls raped by Muslims",    
+            "Brit with teeth like candy corn",
+            "I fucking hate their guts but",
+            "I begged them to leave my wife alone",
+            "I thought flagging was forbidden",
+            "Sperg out and make it worse",
+            "Vile untrue shit about my wife",
+            "Cringe emotional response",
+            "They laughed when I begged",
+            "No magic abilities to take channels down",
+            "Boring human despite the memes",
+            "'woooooow' - mellonless mac",
+            "what are the oranges for?",
+            "I have a non-pajeet youtube rep"
         ];
         let currentMarqueeIndex = 0;
         setInterval(() => {
@@ -618,9 +633,39 @@
         let skyContext = null;
         let cloudsAndDinerPropsArray = [];
         let animationFrameHolder = null;
+        let canvasInitialized = false;
         let interactionPointer = { x: -1000, y: -1000 };
 
         const dinerDoodles = ["🍊", "☕", "🐂"];
+        const emojiSpriteCache = new Map();
+        const FALLING_PROP_COUNT = 40;
+        const MAX_PROP_LIFE_MS = 30000;
+        const EMOJI_SIZES = [12, 16, 20, 24, 28];
+
+        function warmEmojiSprites() {
+            for (const symbol of dinerDoodles) {
+                for (const size of EMOJI_SIZES) {
+                    getEmojiSprite(symbol, size);
+                }
+            }
+        }
+
+        function getEmojiSprite(symbol, size) {
+            const key = `${symbol}-${size}`;
+            if (!emojiSpriteCache.has(key)) {
+                const pad = 4;
+                const canvas = document.createElement("canvas");
+                canvas.width = size + pad * 2;
+                canvas.height = size + pad * 2;
+                const spriteContext = canvas.getContext("2d");
+                spriteContext.font = `${size}px Fredoka, sans-serif`;
+                spriteContext.textAlign = "center";
+                spriteContext.textBaseline = "middle";
+                spriteContext.fillText(symbol, canvas.width / 2, canvas.height / 2);
+                emojiSpriteCache.set(key, canvas);
+            }
+            return emojiSpriteCache.get(key);
+        }
 
         class FluffyCloud {
             constructor() {
@@ -664,76 +709,101 @@
 
             resetProp() {
                 this.x = Math.random() * window.innerWidth;
-                this.y = -40;
+                this.y = -40 - Math.random() * 80;
                 this.symbol = dinerDoodles[Math.floor(Math.random() * dinerDoodles.length)];
-                this.size = Math.random() * 18 + 12;
-                this.speedY = Math.random() * 1.5 + 0.8;
-                this.speedX = (Math.random() - 0.5) * 0.6;
+                this.size = EMOJI_SIZES[Math.floor(Math.random() * EMOJI_SIZES.length)];
+                this.speedY = Math.random() * 1.2 + 0.7;
+                this.speedX = (Math.random() - 0.5) * 0.4;
                 this.rotation = Math.random() * Math.PI * 2;
-                this.rotSpeed = (Math.random() - 0.5) * 0.04;
-                this.opacity = Math.random() * 0.4 + 0.25;
+                this.rotSpeed = (Math.random() - 0.5) * 0.03;
+                this.opacity = Math.random() * 0.35 + 0.25;
+                this.spawnedAt = performance.now();
             }
 
             update() {
                 this.y += this.speedY;
                 this.x += this.speedX;
                 this.rotation += this.rotSpeed;
+                this.speedX *= 0.99;
 
-                const dx = interactionPointer.x - this.x;
-                const dy = interactionPointer.y - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 110) {
-                    this.x -= dx * 0.04;
-                    this.y -= dy * 0.04;
-                    this.speedX += (Math.random() - 0.5) * 0.15;
-                }
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                const expired = performance.now() - this.spawnedAt > MAX_PROP_LIFE_MS;
+                const outOfBounds = this.y > h + 40 || this.y < -120 || this.x < -60 || this.x > w + 60;
 
-                if (this.y > window.innerHeight + 40) {
+                if (outOfBounds || expired) {
                     this.resetProp();
                 }
             }
 
             draw(ctx) {
+                const sprite = getEmojiSprite(this.symbol, this.size);
                 ctx.save();
                 ctx.globalAlpha = this.opacity;
-                ctx.font = `${this.size}px Fredoka`;
                 ctx.translate(this.x, this.y);
                 ctx.rotate(this.rotation);
-                ctx.fillText(this.symbol, -this.size / 2, this.size / 2);
+                ctx.drawImage(sprite, -sprite.width / 2, -sprite.height / 2);
                 ctx.restore();
             }
         }
 
         function initiateDinerCanvas() {
+            if (canvasInitialized) return;
+
             skyCanvasElement = document.getElementById("sky-canvas");
             if (!skyCanvasElement) return;
             skyContext = skyCanvasElement.getContext("2d");
+            canvasInitialized = true;
 
             skyCanvasElement.width = window.innerWidth;
             skyCanvasElement.height = window.innerHeight;
 
             cloudsAndDinerPropsArray = [];
 
+            warmEmojiSprites();
+
             for (let i = 0; i < 4; i++) {
                 cloudsAndDinerPropsArray.push(new FluffyCloud());
             }
 
-            for (let i = 0; i < 85; i++) {
+            for (let i = 0; i < FALLING_PROP_COUNT; i++) {
                 cloudsAndDinerPropsArray.push(new FallingDinerProp());
             }
 
             window.addEventListener("mousemove", trackCursorCoordinates);
+            window.addEventListener("mouseleave", clearCursorCoordinates);
             window.addEventListener("touchmove", trackCursorCoordinates, { passive: true });
+            window.addEventListener("touchend", clearCursorCoordinates, { passive: true });
             window.addEventListener("resize", handleWindowResize);
+            document.addEventListener("visibilitychange", handleCanvasVisibility);
 
             if (animationFrameHolder) cancelAnimationFrame(animationFrameHolder);
             skyCanvasEngineLoop();
+        }
+
+        function handleCanvasVisibility() {
+            if (document.hidden) {
+                if (animationFrameHolder) {
+                    cancelAnimationFrame(animationFrameHolder);
+                    animationFrameHolder = null;
+                }
+                return;
+            }
+
+            if (!animationFrameHolder) {
+                skyCanvasEngineLoop();
+            }
         }
 
         function handleWindowResize() {
             if (!skyCanvasElement) return;
             skyCanvasElement.width = window.innerWidth;
             skyCanvasElement.height = window.innerHeight;
+        }
+
+        function clearCursorCoordinates() {
+            interactionPointer.x = -1000;
+            interactionPointer.y = -1000;
         }
 
         function trackCursorCoordinates(e) {
@@ -745,15 +815,25 @@
         }
 
         function skyCanvasEngineLoop() {
-            if (!skyCanvasElement || !skyContext) return;
+            if (!skyCanvasElement || !skyContext || document.hidden) {
+                animationFrameHolder = null;
+                return;
+            }
 
-            skyContext.fillStyle = "#4a9cd6";
-            skyContext.fillRect(0, 0, skyCanvasElement.width, skyCanvasElement.height);
+            try {
+                skyContext.fillStyle = "#4a9cd6";
+                skyContext.fillRect(0, 0, skyCanvasElement.width, skyCanvasElement.height);
 
-            cloudsAndDinerPropsArray.forEach(entity => {
-                entity.update();
-                entity.draw(skyContext);
-            });
+                for (let i = 0; i < cloudsAndDinerPropsArray.length; i++) {
+                    cloudsAndDinerPropsArray[i].update();
+                    cloudsAndDinerPropsArray[i].draw(skyContext);
+                }
+            } catch (err) {
+                cloudsAndDinerPropsArray.forEach(entity => {
+                    if (typeof entity.resetProp === "function") entity.resetProp();
+                    else if (typeof entity.resetCloud === "function") entity.resetCloud();
+                });
+            }
 
             animationFrameHolder = requestAnimationFrame(skyCanvasEngineLoop);
         }
