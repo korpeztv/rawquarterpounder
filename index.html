@@ -153,7 +153,7 @@
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div class="space-y-1">
                         <h3 class="text-sm font-bold text-[#1a1512] uppercase tracking-wider flex items-center gap-2">
-                            <i data-lucide="clock" class="w-4 h-4 text-red-600"></i> Adjust Diner Time Coordinates
+                            <i data-lucide="clock" class="w-4 h-4 text-red-600"></i> Opening Hours
                         </h3>
                         <p class="text-[10px] text-zinc-600 font-mono">// Swap between your local timezone and EST standard</p>
                     </div>
@@ -161,7 +161,7 @@
                     <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                         <div class="flex bg-[#faf6e8] border-2 border-[#1a1512] rounded-xl overflow-hidden p-0.5 shadow-sm">
                             <button onclick="changeTimezoneMode('local')" id="tz-btn-local" class="px-3 py-1.5 text-[10px] font-bold uppercase transition bg-[#c9242a] text-white rounded-lg">
-                                My Table Zone
+                                My Time Zone
                             </button>
                             <button onclick="changeTimezoneMode('est')" id="tz-btn-est" class="px-3 py-1.5 text-[10px] font-bold uppercase transition text-[#1a1512]">
                                 EST (Eastern)
@@ -178,10 +178,10 @@
                 <div class="border-t-2 border-dashed border-[#1a1512]/20"></div>
 
                 <div class="flex flex-col md:flex-row md:items-center gap-3">
-                    <span class="text-xs text-[#1a1512] font-mono font-bold tracking-wider uppercase flex-shrink-0">Select Dish Section:</span>
+                    <span class="text-xs text-[#1a1512] font-mono font-bold tracking-wider uppercase flex-shrink-0">Select Stream Section:</span>
                     <div class="flex flex-wrap gap-2">
                         <button onclick="changeCategoryFilter('all')" id="filter-btn-all" class="px-3 py-1.5 rounded-lg bg-[#fff3a1] border-2 border-[#1a1512] retro-shadow-sm text-xs font-bold text-[#1a1512] transition">
-                            All Dishes
+                            All Streams
                         </button>
                         <button onclick="changeCategoryFilter('radio')" id="filter-btn-radio" class="px-3 py-1.5 rounded-lg bg-[#faf6e8] border-2 border-[#1a1512] text-xs font-bold text-zinc-500 hover:text-[#1a1512] hover:bg-[#fff3a1] transition">
                             Radio (RawQP)
@@ -236,10 +236,10 @@
                         <table class="w-full text-left border-collapse font-mono text-sm text-[#1a1512]">
                             <thead>
                                 <tr class="border-b-2 border-[#1a1512] text-xs uppercase font-bold text-zinc-600">
-                                    <th class="p-3">Order Code (Date)</th>
-                                    <th class="p-3">Serving Time</th>
-                                    <th class="p-3">Featured Special Dish</th>
-                                    <th class="p-3 text-right">Get Table Link</th>
+                                    <th class="p-3">Date</th>
+                                    <th class="p-3">Start Time</th>
+                                    <th class="p-3">Event</th>
+                                    <th class="p-3 text-right">Link</th>
                                 </tr>
                             </thead>
                             <tbody id="menu-table-rows" class="divide-y divide-[#1a1512]/10">
